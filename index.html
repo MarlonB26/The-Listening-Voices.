@@ -26,11 +26,14 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
-        const { Mic, ChevronLeft, Quote, CheckCircle, Heart } = lucide;
 
         const App = () => {
             const [view, setView] = useState('home');
             const [submitted, setSubmitted] = useState(false);
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [view, submitted]);
 
             const handleFormSubmit = (e) => {
                 e.preventDefault();
@@ -45,7 +48,7 @@
                         <div className="max-w-6xl mx-auto flex justify-between items-center">
                             <div onClick={() => setView('home')} className="flex items-center gap-2 cursor-pointer group">
                                 <div className="bg-slate-900 text-white p-2 rounded-lg group-hover:bg-indigo-600 transition-colors">
-                                    <i data-lucide="mic" size="20"></i>
+                                    <i data-lucide="mic" className="w-5 h-5"></i>
                                 </div>
                                 <span className="font-bold text-xl tracking-tight">The Listening Voices</span>
                             </div>
@@ -63,12 +66,12 @@
                                 <header className="pt-24 pb-16 px-6 bg-white border-b border-slate-100 relative overflow-hidden">
                                     <div className="max-w-4xl mx-auto text-center relative z-10">
                                         <div className="inline-block px-4 py-1 mb-6 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-[0.2em]">
-                                            New Year's Eve Launch
+                                            Launch Edition: Jan 2026
                                         </div>
                                         <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-8 tracking-tight leading-tight">
                                             Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-200 underline-offset-8">forgotten</span> to the forefront.
                                         </h1>
-                                        <p className="text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto mb-10 font-serif italic text-lg">
+                                        <p className="text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto mb-10 font-serif italic">
                                             "To listen is to love. We archive the wisdom of those the world has passed by."
                                         </p>
                                     </div>
@@ -81,14 +84,14 @@
                                                 <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 italic font-serif text-xl font-bold">E</div>
                                                 <div>
                                                     <h3 className="font-bold text-xl">Elias of 5th Street</h3>
-                                                    <p className="text-xs text-slate-400 uppercase tracking-widest">Coming Jan 2025</p>
+                                                    <p className="text-xs text-slate-400 uppercase tracking-widest text-indigo-500">First Voice of 2026</p>
                                                 </div>
                                             </div>
                                             <p className="text-slate-600 leading-relaxed font-serif italic text-lg mb-6">
                                                 "People walk past me like I'm part of the brickwork. But the bricks have ears, and I've been listening to this city breathe for three decades..."
                                             </p>
                                             <div className="flex items-center text-indigo-600 font-bold text-sm gap-2">
-                                                Story in progress <i data-lucide="clock" size="16"></i>
+                                                Story Recording in Progress <i data-lucide="clock" className="w-4 h-4"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -98,13 +101,13 @@
                             <div className="animate-fade-in pt-24 pb-20 px-6">
                                 <div className="max-w-xl mx-auto">
                                     <button onClick={() => setView('home')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 mb-8 font-bold text-xs uppercase tracking-widest transition-colors">
-                                        <i data-lucide="chevron-left" size="16"></i> Back to Archive
+                                        <i data-lucide="chevron-left" className="w-4 h-4"></i> Back to Archive
                                     </button>
                                     <h2 className="text-4xl font-bold mb-4">Whose voice are we missing?</h2>
                                     {submitted ? (
                                         <div className="bg-white border border-slate-100 p-12 rounded-[3rem] text-center shadow-xl">
                                             <div className="text-green-500 mb-6 flex justify-center">
-                                                <i data-lucide="check-circle" size="48"></i>
+                                                <i data-lucide="check-circle" className="w-12 h-12"></i>
                                             </div>
                                             <h3 className="text-2xl font-bold text-slate-900 mb-3">Submission Received.</h3>
                                             <p className="text-slate-500">The Lead Listener will review this story soon.</p>
@@ -128,15 +131,15 @@
                     <footer className="py-20 px-6 bg-slate-900 text-white rounded-t-[4rem] text-center">
                         <div className="max-w-4xl mx-auto">
                             <div className="flex items-center justify-center gap-3 mb-6">
-                                <i data-lucide="mic" size="32" className="text-indigo-400"></i>
+                                <i data-lucide="mic" className="w-8 h-8 text-indigo-400"></i>
                                 <span className="font-bold text-2xl tracking-tighter">The Listening Voices</span>
                             </div>
                             <p className="text-slate-400 mb-10 text-lg font-serif italic max-w-md mx-auto">
                                 "Providing a sanctuary for the stories that go unheard."
                             </p>
-                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em] mb-4">Established Dec 31, 2024</p>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em] mb-4">Established Dec 31, 2025</p>
                             <div className="flex justify-center gap-2 text-indigo-400">
-                                <i data-lucide="heart" size="16"></i>
+                                <i data-lucide="heart" className="w-4 h-4"></i>
                             </div>
                         </div>
                     </footer>
@@ -146,9 +149,6 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-
-        // Initialize Lucide icons after rendering
-        setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>
 </html>
