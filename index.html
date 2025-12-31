@@ -1,64 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Listening Voices | Archive</title>
-    <!-- Tailwind for styling -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Listening Voices | Sanctuary</title>
+    <!-- Tailwind for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Premium Fonts -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:italic,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- React & Babel for in-browser rendering -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-      body { font-family: 'Inter', sans-serif; }
-      .font-serif { font-family: 'Lora', serif; }
-      /* Fallback for loading state */
-      #root:empty::before {
-        content: "Loading the Sanctuary...";
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        color: #6366f1;
-        font-family: serif;
-        font-style: italic;
-        font-size: 1.5rem;
-      }
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Lora', serif; }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
-  </head>
-  <body>
+</head>
+<body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
-    
-    <script type="importmap">
-      {
-        "imports": {
-          "react": "https://esm.sh/react@18.2.0",
-          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-          "lucide-react": "https://esm.sh/lucide-react@0.284.0"
-        }
-      }
-    </script>
 
-    <script type="module">
-      import React from 'react'
-      import ReactDOM from 'react-dom/client'
-      
-      /** * We use a relative path './App.jsx' which is the standard for 
-       * files sitting in the same folder.
-       */
-      import App from './App.jsx'
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { Mic, ChevronLeft, Quote, CheckCircle, Heart } = lucide;
 
-      try {
-        const root = ReactDOM.createRoot(document.getElementById('root'))
-        root.render(React.createElement(App))
-      } catch (err) {
-        console.error("The Lead Listener encountered an error:", err);
-        document.getElementById('root').innerHTML = `
-          <div style="padding: 40px; text-align: center; font-family: sans-serif;">
-            <h2>Connection Issue</h2>
-            <p>The archive is having trouble loading its stories. Please ensure App.jsx is saved in the same folder.</p>
-          </div>
-        `;
-      }
+        const App = () => {
+            const [view, setView] = useState('home');
+            const [submitted, setSubmitted] = useState(false);
+
+            const handleFormSubmit = (e) => {
+                e.preventDefault();
+                setSubmitted(true);
+                setTimeout(() => setSubmitted(false), 5000);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Navigation */}
+                    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100 py-4 px-6">
+                        <div className="max-w-6xl mx-auto flex justify-between items-center">
+                            <div onClick={() => setView('home')} className="flex items-center gap-2 cursor-pointer group">
+                                <div className="bg-slate-900 text-white p-2 rounded-lg group-hover:bg-indigo-600 transition-colors">
+                                    <i data-lucide="mic" size="20"></i>
+                                </div>
+                                <span className="font-bold text-xl tracking-tight">The Listening Voices</span>
+                            </div>
+                            <div className="flex gap-6 font-medium text-sm text-slate-600 uppercase tracking-widest">
+                                <button onClick={() => setView('home')} className="hover:text-indigo-600 transition-colors">Archive</button>
+                                <button onClick={() => setView('submit')} className="bg-indigo-600 text-white px-5 py-2 rounded-full hover:bg-indigo-700 transition-all shadow-md">Suggest a Story</button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Content */}
+                    <main className="flex-grow">
+                        {view === 'home' ? (
+                            <div className="animate-fade-in">
+                                <header className="pt-24 pb-16 px-6 bg-white border-b border-slate-100 relative overflow-hidden">
+                                    <div className="max-w-4xl mx-auto text-center relative z-10">
+                                        <div className="inline-block px-4 py-1 mb-6 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                            New Year's Eve Launch
+                                        </div>
+                                        <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-8 tracking-tight leading-tight">
+                                            Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-200 underline-offset-8">forgotten</span> to the forefront.
+                                        </h1>
+                                        <p className="text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto mb-10 font-serif italic text-lg">
+                                            "To listen is to love. We archive the wisdom of those the world has passed by."
+                                        </p>
+                                    </div>
+                                </header>
+
+                                <section className="max-w-6xl mx-auto px-6 py-20">
+                                    <div className="grid md:grid-cols-1 gap-12 max-w-2xl mx-auto">
+                                        <div className="group cursor-pointer bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-500">
+                                            <div className="flex items-center gap-4 mb-6">
+                                                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 italic font-serif text-xl font-bold">E</div>
+                                                <div>
+                                                    <h3 className="font-bold text-xl">Elias of 5th Street</h3>
+                                                    <p className="text-xs text-slate-400 uppercase tracking-widest">Coming Jan 2025</p>
+                                                </div>
+                                            </div>
+                                            <p className="text-slate-600 leading-relaxed font-serif italic text-lg mb-6">
+                                                "People walk past me like I'm part of the brickwork. But the bricks have ears, and I've been listening to this city breathe for three decades..."
+                                            </p>
+                                            <div className="flex items-center text-indigo-600 font-bold text-sm gap-2">
+                                                Story in progress <i data-lucide="clock" size="16"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        ) : (
+                            <div className="animate-fade-in pt-24 pb-20 px-6">
+                                <div className="max-w-xl mx-auto">
+                                    <button onClick={() => setView('home')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 mb-8 font-bold text-xs uppercase tracking-widest transition-colors">
+                                        <i data-lucide="chevron-left" size="16"></i> Back to Archive
+                                    </button>
+                                    <h2 className="text-4xl font-bold mb-4">Whose voice are we missing?</h2>
+                                    {submitted ? (
+                                        <div className="bg-white border border-slate-100 p-12 rounded-[3rem] text-center shadow-xl">
+                                            <div className="text-green-500 mb-6 flex justify-center">
+                                                <i data-lucide="check-circle" size="48"></i>
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-slate-900 mb-3">Submission Received.</h3>
+                                            <p className="text-slate-500">The Lead Listener will review this story soon.</p>
+                                            <button onClick={() => setView('home')} className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-full font-bold transition-transform hover:scale-105">Return Home</button>
+                                        </div>
+                                    ) : (
+                                        <form onSubmit={handleFormSubmit} className="space-y-6 bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-slate-100">
+                                            <input required type="text" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none outline-none focus:ring-2 ring-indigo-500/20" placeholder="Your Name" />
+                                            <textarea required rows="4" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none outline-none focus:ring-2 ring-indigo-500/20 resize-none" placeholder="Tell us about the voice we should hear..."></textarea>
+                                            <button type="submit" className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl hover:bg-indigo-700 transition-all">
+                                                Send to Lead Listener
+                                            </button>
+                                        </form>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="py-20 px-6 bg-slate-900 text-white rounded-t-[4rem] text-center">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex items-center justify-center gap-3 mb-6">
+                                <i data-lucide="mic" size="32" className="text-indigo-400"></i>
+                                <span className="font-bold text-2xl tracking-tighter">The Listening Voices</span>
+                            </div>
+                            <p className="text-slate-400 mb-10 text-lg font-serif italic max-w-md mx-auto">
+                                "Providing a sanctuary for the stories that go unheard."
+                            </p>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em] mb-4">Established Dec 31, 2024</p>
+                            <div className="flex justify-center gap-2 text-indigo-400">
+                                <i data-lucide="heart" size="16"></i>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // Initialize Lucide icons after rendering
+        setTimeout(() => lucide.createIcons(), 100);
     </script>
-  </body>
+</body>
 </html>
