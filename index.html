@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Listening Voices | Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:italic,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      .font-serif { font-family: 'Lora', serif; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React from 'https://esm.sh/react@18.2.0'
+      import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client'
+      import App from './App.jsx'
+
+      const root = ReactDOM.createRoot(document.getElementById('root'))
+      root.render(React.createElement(App))
+    </script>
+  </body>
+</html>
