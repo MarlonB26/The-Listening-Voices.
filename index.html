@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:italic,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
+    <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
@@ -27,18 +28,25 @@
             try {
                 await addDoc(collection(db, col), { ...data, timestamp: serverTimestamp() });
                 return true;
-            } catch (e) { return false; }
+            } catch (e) { 
+                console.error("Firebase Error:", e);
+                return false; 
+            }
         };
     </script>
 
+    <!-- React Requirements -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fcfcfd; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #fcfcfd; }
         .font-serif { font-family: 'Lora', serif; }
         .logo-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -52,17 +60,30 @@
             const [playing, setPlaying] = useState(false);
             const audioRef = useRef(null);
 
-            useEffect(() => { lucide.createIcons(); window.scrollTo(0, 0); }, [view]);
+            useEffect(() => { 
+                if (window.lucide) window.lucide.createIcons(); 
+                window.scrollTo(0, 0); 
+            }, [view]);
 
-            // --- CHANGE YOUR AUDIO LINK HERE ---
-            const audioUrl = "https://github.com/MarlonB26/The-Listening-Voices./blob/main/Elias.mp3
+            // ==========================================
+            // PASTE YOUR GITHUB AUDIO LINK BELOW
+            // ==========================================
+            const audioUrl = ""; 
+            // Example: "https://raw.githubusercontent.com/username/repo/main/elias.mp3"
 
             const togglePlay = () => {
                 if (!audioUrl) {
-                    alert("The audio for this entry is currently being digitized. Check back soon!");
+                    alert("This audio narrative is currently being restored. Please check back shortly.");
                     return;
                 }
-                playing ? audioRef.current.pause() : audioRef.current.play();
+                if (playing) {
+                    audioRef.current.pause();
+                } else {
+                    audioRef.current.play().catch(err => {
+                        console.error("Playback failed:", err);
+                        alert("Could not play audio. Please check your link.");
+                    });
+                }
                 setPlaying(!playing);
             };
 
@@ -74,6 +95,8 @@
                 if (success) {
                     alert(type === 'subscribers' ? "Welcome to the Sanctuary list." : "Thank you. Your suggestion has been archived.");
                     e.target.reset();
+                } else {
+                    alert("Submission failed. Please check your connection.");
                 }
             };
 
@@ -85,42 +108,44 @@
                                 <div className="w-10 h-10 logo-gradient rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
                                     <i data-lucide="mic" className="text-white w-5 h-5"></i>
                                 </div>
-                                <span className="font-bold text-xl tracking-tight">The Listening Voices</span>
+                                <span className="font-bold text-xl tracking-tight text-slate-900">The Listening Voices</span>
                             </div>
-                            <button onClick={() => setView('submit')} className="bg-slate-900 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-indigo-600 transition-all">Suggest</button>
+                            <button onClick={() => setView('submit')} className="bg-slate-900 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-indigo-600 transition-all active:scale-95">Suggest</button>
                         </div>
                     </nav>
 
                     <main className="flex-grow pt-24">
-                        {view === 'home' ? (
-                            <div className="animate-fade-in">
+                        {view === 'home' && (
+                            <div className="animate-fade">
                                 <header className="py-20 px-6 text-center">
-                                    <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter mb-6 leading-tight">Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-100">forgotten</span> to the forefront.</h1>
+                                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 leading-tight text-slate-900">Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-100">forgotten</span> to the forefront.</h1>
                                     <p className="text-xl text-slate-400 font-serif italic">"To listen is to love."</p>
                                 </header>
                                 <section className="max-w-4xl mx-auto px-6 pb-20">
-                                    <div onClick={() => setView('story')} className="group cursor-pointer bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all">
+                                    <div onClick={() => setView('story')} className="group cursor-pointer bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300">
                                         <div className="flex items-center gap-4 mb-6">
                                             <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center font-serif text-xl italic group-hover:bg-indigo-600 transition-colors">E</div>
-                                            <h3 className="font-bold text-2xl">Elias of 5th Street</h3>
+                                            <h3 className="font-bold text-2xl text-slate-900">Elias of 5th Street</h3>
                                         </div>
-                                        <p className="text-slate-500 font-serif italic text-2xl mb-6">"People walk past me like I'm part of the brickwork..."</p>
+                                        <p className="text-slate-500 font-serif italic text-2xl mb-6 leading-relaxed">"People walk past me like I'm part of the brickwork..."</p>
                                         <div className="text-indigo-600 font-bold text-xs uppercase tracking-widest flex items-center gap-2">Read Entry <i data-lucide="arrow-right" className="w-4 h-4"></i></div>
                                     </div>
                                 </section>
                             </div>
-                        ) : view === 'story' ? (
-                            <div className="max-w-3xl mx-auto py-12 px-6 animate-fade-in">
+                        )}
+
+                        {view === 'story' && (
+                            <div className="max-w-3xl mx-auto py-12 px-6 animate-fade">
                                 <button onClick={() => setView('home')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 mb-8 font-bold text-xs uppercase tracking-widest"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back</button>
-                                <h1 className="text-5xl font-extrabold mb-6">Elias of 5th Street</h1>
+                                <h1 className="text-4xl md:text-6xl font-extrabold mb-6 text-slate-900">Elias of 5th Street</h1>
                                 
                                 <div className="bg-white border border-indigo-50 p-6 rounded-[2rem] my-10 flex items-center gap-6 shadow-sm">
-                                    <button onClick={togglePlay} className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                                    <button onClick={togglePlay} className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg active:scale-95 transition-transform">
                                         {playing ? <i data-lucide="pause"></i> : <i data-lucide="play" className="ml-1"></i>}
                                     </button>
                                     <div className="flex-grow">
-                                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Archive #001</p>
-                                        <h4 className="font-bold">Sonic Narrative</h4>
+                                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Sonic Archive #001</p>
+                                        <h4 className="font-bold text-slate-900">A Walk Through the Brickwork</h4>
                                     </div>
                                     <audio ref={audioRef} src={audioUrl} onEnded={() => setPlaying(false)} />
                                 </div>
@@ -131,27 +156,32 @@
                                     <p>Every day, I hear snippets of conversations—a child laughing, lovers quarrelling, friends reuniting. Their words are like whispers in my ear. The city breathes through them, sharing secrets that go unnoticed by those who rush by.</p>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="max-w-xl mx-auto py-12 px-6 animate-fade-in">
+                        )}
+
+                        {view === 'submit' && (
+                            <div className="max-w-xl mx-auto py-12 px-6 animate-fade">
                                 <button onClick={() => setView('home')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 mb-8 font-bold text-xs uppercase tracking-widest"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back</button>
-                                <h2 className="text-4xl font-extrabold mb-8">Suggest a Voice</h2>
+                                <h2 className="text-4xl font-extrabold mb-2 text-slate-900">Suggest a Voice</h2>
+                                <p className="text-slate-400 font-serif italic mb-8">Whose narrative needs a sanctuary?</p>
                                 <form onSubmit={(e) => handleForm(e, 'suggestions')} className="space-y-4">
-                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100" placeholder="Their Name" />
-                                    <textarea required name="story" rows="5" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 resize-none" placeholder="Their Story..."></textarea>
-                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold">Submit to Archive</button>
+                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:border-indigo-200" placeholder="Their Name" />
+                                    <textarea required name="story" rows="5" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:border-indigo-200 resize-none" placeholder="Tell us about them..."></textarea>
+                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100">Submit to Archive</button>
                                 </form>
                             </div>
                         )}
                     </main>
 
-                    <footer className="bg-slate-900 text-white py-20 px-6 text-center mt-20 rounded-t-[4rem]">
+                    <footer className="bg-slate-950 text-white py-20 px-6 text-center mt-20 rounded-t-[4rem]">
                         <div className="max-w-md mx-auto">
-                            <h3 className="text-2xl font-bold mb-4">Newsletter</h3>
-                            <form onSubmit={(e) => handleForm(e, 'subscribers')} className="flex gap-2 mb-8">
-                                <input required name="email" type="email" className="flex-grow px-6 py-3 rounded-xl bg-white/10 border border-white/10" placeholder="Email Address" />
-                                <button className="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold">Join</button>
+                            <h3 className="text-2xl font-bold mb-4">Join the Sanctuary</h3>
+                            <p className="text-slate-500 mb-6 font-serif italic">Get notified when new voices are recorded.</p>
+                            <form onSubmit={(e) => handleForm(e, 'subscribers')} className="flex gap-2 mb-12">
+                                <input required name="email" type="email" className="flex-grow px-6 py-3 rounded-xl bg-white/10 border border-white/10 outline-none focus:bg-white/20 transition-all" placeholder="Email Address" />
+                                <button className="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-indigo-50 transition-colors">Join</button>
                             </form>
-                            <p className="text-slate-500 font-serif italic italic">"Providing a sanctuary for the stories that go unheard."</p>
+                            <div className="h-px bg-white/10 w-24 mx-auto mb-8"></div>
+                            <p className="text-slate-600 font-serif italic text-sm">Providing a sanctuary for the stories that shape our city's soul.</p>
                         </div>
                     </footer>
                 </div>
