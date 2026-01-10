@@ -8,8 +8,11 @@
     <!-- CONFIGURATION -->
     <script>
         window.AUDIO_CONFIG = {
-            // Using the direct GitHub Raw link - the most reliable for public repos
-            elias_audio: "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices/main/Mar.mp3" 
+            /**
+             * UPDATED LINK: 
+             * Noticed the period in the repository name: "The-Listening-Voices."
+             */
+            elias_audio: "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3" 
         };
     </script>
 
@@ -45,12 +48,6 @@
         body { font-family: 'Inter', sans-serif; background-color: #fcfcfd; }
         .font-serif { font-family: 'Lora', serif; }
         .logo-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        
-        @keyframes pulse-red {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .error-pulse { animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body>
@@ -73,26 +70,15 @@
 
             const togglePlay = () => {
                 if (!audioRef.current) return;
-
                 if (playing) {
                     audioRef.current.pause();
                     setPlaying(false);
                 } else {
                     setLoadError(null);
-                    
-                    const playPromise = audioRef.current.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise
-                            .then(() => {
-                                setPlaying(true);
-                            })
-                            .catch(e => {
-                                console.error("Playback failed:", e);
-                                setLoadError("Browser blocked playback or file missing.");
-                                setPlaying(false);
-                            });
-                    }
+                    audioRef.current.play().then(() => setPlaying(true)).catch(e => {
+                        setLoadError("Playback failed. Verify the file link is accessible.");
+                        setPlaying(false);
+                    });
                 }
             };
 
@@ -141,18 +127,18 @@
                                     </button>
                                     <div className="flex-grow">
                                         <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${loadError ? 'text-red-600' : 'text-indigo-500'}`}>
-                                            {loadError ? "Playback Error" : "Archive Entry #001"}
+                                            {loadError ? "Connection Error" : "Archive Entry #001"}
                                         </p>
                                         <h4 className="font-bold text-xl text-slate-900">
-                                            {loadError ? "Audio Link Broken" : "The Brickwork Narrative"}
+                                            {loadError ? "Audio Link Needs Verification" : "The Brickwork Narrative"}
                                         </h4>
                                         {loadError && (
-                                            <div className="mt-2">
-                                                <p className="text-xs text-red-500 font-medium italic mb-2">
-                                                    {loadError}
+                                            <div className="mt-2 flex flex-col gap-2">
+                                                <p className="text-xs text-red-500 font-medium italic">
+                                                    Check the console for errors or click the link below to verify access.
                                                 </p>
-                                                <a href={audioUrl} target="_blank" className="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded font-bold uppercase hover:bg-red-200 transition-colors">
-                                                    Check File Directly
+                                                <a href={audioUrl} target="_blank" className="text-[10px] bg-red-600 text-white w-fit px-3 py-1 rounded font-bold uppercase hover:bg-red-700">
+                                                    Verify Link Access
                                                 </a>
                                             </div>
                                         )}
@@ -166,26 +152,22 @@
                                         src={audioUrl} 
                                         crossOrigin="anonymous"
                                         onEnded={() => setPlaying(false)} 
-                                        onError={(e) => {
-                                            console.error("Audio Load Error");
-                                            setLoadError("The file could not be found. Check if 'Mar.mp3' is spelled exactly like this on GitHub.");
-                                        }}
+                                        onError={() => setLoadError("Link Error. Check repo name period.")}
                                         preload="auto" 
                                     />
                                 </div>
 
                                 <div className="font-serif text-xl md:text-2xl text-slate-700 italic space-y-8 leading-relaxed">
                                     <p>"People walk past me like I'm part of the brickwork. But the bricks have ears, and I've been listening to the city breathe for three decades."</p>
-                                    <p>The city breathes through them, sharing secrets that go unnoticed by those who rush by.</p>
                                 </div>
                             </div>
                         ) : (
                             <div className="max-w-xl mx-auto py-12 px-6">
                                 <h2 className="text-4xl font-extrabold mb-8 text-slate-900">Suggest a Voice</h2>
                                 <form onSubmit={(e) => handleForm(e, 'suggestions')} className="space-y-4">
-                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 outline-none focus:border-indigo-200" placeholder="Name" />
-                                    <textarea required name="story" rows="4" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 outline-none focus:border-indigo-200 resize-none" placeholder="Story..."></textarea>
-                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-colors">Submit to Sanctuary</button>
+                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200" placeholder="Name" />
+                                    <textarea required name="story" rows="4" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200" placeholder="Story..."></textarea>
+                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold">Submit to Sanctuary</button>
                                 </form>
                             </div>
                         )}
