@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Listening Voices Project | Sanctuary Archive</title>
+    <title>The Listening Voices Project</title>
+    
+    <!-- CONFIGURATION -->
+    <script>
+        window.AUDIO_CONFIG = {
+            // 1. MUST start with https://raw.githubusercontent.com/
+            // 2. MUST end with .mp3 (no extra symbols after it)
+            elias_audio: "PASTE_LINK_HERE" 
+        };
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:italic,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:italic,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
@@ -21,7 +31,7 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        window.saveData = async (col, data) => {
+        window.saveToSanctuary = async (col, data) => {
             try { await addDoc(collection(db, col), { ...data, timestamp: serverTimestamp() }); return true; }
             catch (e) { return false; }
         };
@@ -31,28 +41,32 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcfcfd; }
+        .font-serif { font-family: 'Lora', serif; }
+        .logo-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+    </style>
 </head>
-<body class="bg-[#fcfcfd]">
+<body>
     <div id="root"></div>
+
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
         const App = () => {
             const [view, setView] = useState('home');
             const [playing, setPlaying] = useState(false);
+            const [loadError, setLoadError] = useState(false);
             const audioRef = useRef(null);
+
+            const audioUrl = window.AUDIO_CONFIG.elias_audio;
 
             useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view]);
 
-            // ============================================================
-            // 1. PASTE YOUR LINK INSIDE THE QUOTES BELOW
-            // ============================================================
-            const audioUrl = "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices./refs/heads/main/Elias.mp3"; 
-            // ============================================================
-
             const togglePlay = () => {
-                if (!audioUrl || audioUrl.includes("PASTE_YOUR_RAW_LINK")) {
-                    alert("The link is missing. Check Line 58 in your code.");
+                if (!audioUrl || audioUrl === "PASTE_LINK_HERE") {
+                    alert("Please paste your GitHub 'Raw' link in the AUDIO_CONFIG section at the top of the file.");
                     return;
                 }
                 
@@ -61,10 +75,13 @@
                     setPlaying(false);
                 } else {
                     audioRef.current.play()
-                        .then(() => setPlaying(true))
+                        .then(() => {
+                            setPlaying(true);
+                            setLoadError(false);
+                        })
                         .catch(e => {
-                            console.error(e);
-                            alert("Audio Error: The browser couldn't load the file. Check your link format.");
+                            console.error("Audio Error:", e);
+                            setLoadError(true);
                         });
                 }
             };
@@ -72,17 +89,17 @@
             const handleForm = async (e, type) => {
                 e.preventDefault();
                 const data = Object.fromEntries(new FormData(e.target).entries());
-                const success = await window.saveData(type, data);
-                if (success) { alert("Stored successfully."); e.target.reset(); }
+                const success = await window.saveToSanctuary(type, data);
+                if (success) { alert("Stored in Sanctuary."); e.target.reset(); }
             };
 
             return (
-                <div className="min-h-screen flex flex-col font-sans">
+                <div className="min-h-screen flex flex-col">
                     <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 py-4 px-6">
                         <div className="max-w-6xl mx-auto flex justify-between items-center">
                             <div onClick={() => setView('home')} className="flex items-center gap-3 cursor-pointer">
-                                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg"><i data-lucide="mic" className="text-white w-5 h-5"></i></div>
-                                <span className="font-bold text-xl tracking-tight">The Listening Voices</span>
+                                <div className="w-10 h-10 logo-gradient rounded-xl flex items-center justify-center shadow-lg"><i data-lucide="mic" className="text-white w-5 h-5"></i></div>
+                                <span className="font-bold text-xl tracking-tight text-slate-900">The Listening Voices</span>
                             </div>
                             <button onClick={() => setView('submit')} className="bg-slate-900 text-white px-6 py-2 rounded-full text-sm font-bold">Suggest</button>
                         </div>
@@ -91,47 +108,51 @@
                     <main className="flex-grow pt-24">
                         {view === 'home' ? (
                             <div className="py-20 px-6 text-center">
-                                <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tighter">Bringing the <span className="italic font-serif text-indigo-600">forgotten</span> to the forefront.</h1>
+                                <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tighter text-slate-900">Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-100">forgotten</span> to the forefront.</h1>
                                 <div onClick={() => setView('story')} className="max-w-md mx-auto cursor-pointer bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all">
-                                    <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center italic font-serif text-xl mx-auto mb-4">E</div>
-                                    <h3 className="font-bold text-2xl mb-2 text-slate-900">Elias of 5th Street</h3>
+                                    <h3 className="font-bold text-2xl mb-2">Elias of 5th Street</h3>
                                     <p className="text-slate-400 font-serif italic text-lg">"Listen to the Narrative"</p>
                                 </div>
                             </div>
                         ) : view === 'story' ? (
                             <div className="max-w-2xl mx-auto py-12 px-6">
-                                <button onClick={() => setView('home')} className="mb-10 text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:text-indigo-600"><i data-lucide="arrow-left" className="w-4 h-4"></i> Return to Sanctuary</button>
-                                <h1 className="text-5xl font-extrabold mb-8 text-slate-900">Elias of 5th Street</h1>
+                                <button onClick={() => setView('home')} className="mb-10 text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back</button>
+                                <h1 className="text-5xl font-extrabold mb-8 text-slate-900 leading-tight">Elias of 5th Street</h1>
                                 
-                                <div className="bg-white border border-indigo-100 p-8 rounded-[2.5rem] mb-12 flex items-center gap-8 shadow-sm">
-                                    <button onClick={togglePlay} className="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-indigo-700 transition-colors">
+                                <div className={`border p-8 rounded-[2.5rem] mb-12 flex items-center gap-8 shadow-sm transition-colors ${loadError ? 'bg-red-50 border-red-100' : 'bg-white border-indigo-100'}`}>
+                                    <button onClick={togglePlay} className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl transition-all active:scale-95 ${loadError ? 'bg-red-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
                                         {playing ? <i data-lucide="pause" className="w-8 h-8"></i> : <i data-lucide="play" className="w-8 h-8 ml-1"></i>}
                                     </button>
                                     <div>
-                                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Archive Entry #001</p>
-                                        <h4 className="font-bold text-xl">The Brickwork Narrative</h4>
+                                        <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${loadError ? 'text-red-500' : 'text-indigo-500'}`}>
+                                            {loadError ? "Connection Error" : "Archive Entry #001"}
+                                        </p>
+                                        <h4 className="font-bold text-xl text-slate-900">
+                                            {loadError ? "Check Link Privacy" : "The Brickwork Narrative"}
+                                        </h4>
+                                        {loadError && <p className="text-xs text-red-400 mt-1">Make sure your GitHub repo is set to PUBLIC.</p>}
                                     </div>
-                                    <audio ref={audioRef} src={audioUrl} onEnded={() => setPlaying(false)} />
+                                    <audio ref={audioRef} src={audioUrl} onEnded={() => setPlaying(false)} preload="auto" />
                                 </div>
 
                                 <div className="font-serif text-xl md:text-2xl text-slate-700 italic space-y-8 leading-relaxed">
                                     <p>"People walk past me like I'm part of the brickwork. But the bricks have ears, and I've been listening to the city breathe for three decades."</p>
-                                    <p>Every day, I hear snippets of conversations—a child laughing, lovers quarrelling, friends reuniting. Their words are like whispers in my ear.</p>
+                                    <p>The city breathes through them, sharing secrets that go unnoticed by those who rush by.</p>
                                 </div>
                             </div>
                         ) : (
                             <div className="max-w-xl mx-auto py-12 px-6">
-                                <h2 className="text-4xl font-extrabold mb-8">Suggest a Voice</h2>
+                                <h2 className="text-4xl font-extrabold mb-8 text-slate-900">Suggest a Voice</h2>
                                 <form onSubmit={(e) => handleForm(e, 'suggestions')} className="space-y-4">
-                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200" placeholder="Name" />
-                                    <textarea required name="story" rows="4" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 resize-none" placeholder="Their Story..."></textarea>
-                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg">Submit to Archive</button>
+                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 outline-none focus:border-indigo-200" placeholder="Name" />
+                                    <textarea required name="story" rows="4" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 outline-none focus:border-indigo-200 resize-none" placeholder="Story..."></textarea>
+                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-colors">Submit to Sanctuary</button>
                                 </form>
                             </div>
                         )}
                     </main>
-                    <footer className="py-20 bg-slate-900 text-white text-center rounded-t-[4rem] mt-20">
-                        <p className="font-serif italic text-slate-400">"To listen is to love."</p>
+                    <footer className="py-20 bg-slate-950 text-white text-center rounded-t-[4rem] mt-20">
+                        <p className="font-serif italic text-slate-500">"To listen is to love."</p>
                     </footer>
                 </div>
             );
