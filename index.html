@@ -8,9 +8,9 @@
     <!-- CONFIGURATION -->
     <script>
         window.AUDIO_CONFIG = {
-            // 1. MUST start with https://raw.githubusercontent.com/
+            // 1. MUST start with https://raw.githubusercontent.com/ (or a valid CDN link)
             // 2. MUST end with .mp3 (no extra symbols after it)
-            elias_audio: "PASTE_LINK_HERE" 
+            elias_audio: "https://cdn.jsdelivr.net/gh/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3" 
         };
     </script>
 
@@ -65,7 +65,7 @@
             useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view]);
 
             const togglePlay = () => {
-                if (!audioUrl || audioUrl === "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3") {
+                if (!audioUrl || audioUrl === "PASTE_LINK_HERE") {
                     alert("Please paste your GitHub 'Raw' link in the AUDIO_CONFIG section at the top of the file.");
                     return;
                 }
