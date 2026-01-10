@@ -8,8 +8,7 @@
     <!-- CONFIGURATION -->
     <script>
         window.AUDIO_CONFIG = {
-            // 1. MUST start with https://raw.githubusercontent.com/ (or a valid CDN link)
-            // 2. MUST end with .mp3 (no extra symbols after it)
+            // Using jsDelivr to bypass GitHub raw content security policies
             elias_audio: "https://cdn.jsdelivr.net/gh/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3" 
         };
     </script>
@@ -46,6 +45,12 @@
         body { font-family: 'Inter', sans-serif; background-color: #fcfcfd; }
         .font-serif { font-family: 'Lora', serif; }
         .logo-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .error-pulse { animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body>
@@ -57,32 +62,39 @@
         const App = () => {
             const [view, setView] = useState('home');
             const [playing, setPlaying] = useState(false);
-            const [loadError, setLoadError] = useState(false);
+            const [loadError, setLoadError] = useState(null);
             const audioRef = useRef(null);
 
+            // We add a timestamp to the URL to bust any aggressive caching
             const audioUrl = window.AUDIO_CONFIG.elias_audio;
 
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view]);
+            useEffect(() => { 
+                if (window.lucide) window.lucide.createIcons(); 
+            }, [view]);
 
             const togglePlay = () => {
-                if (!audioUrl || audioUrl === "https://cdn.jsdelivr.net/gh/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3") {
-                    alert("Please paste your GitHub 'Raw' link in the AUDIO_CONFIG section at the top of the file.");
-                    return;
-                }
-                
+                if (!audioRef.current) return;
+
                 if (playing) {
                     audioRef.current.pause();
                     setPlaying(false);
                 } else {
-                    audioRef.current.play()
-                        .then(() => {
-                            setPlaying(true);
-                            setLoadError(false);
-                        })
-                        .catch(e => {
-                            console.error("Audio Error:", e);
-                            setLoadError(true);
-                        });
+                    // Reset error state before trying to play
+                    setLoadError(null);
+                    
+                    const playPromise = audioRef.current.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise
+                            .then(() => {
+                                setPlaying(true);
+                            })
+                            .catch(e => {
+                                console.error("Playback failed:", e);
+                                setLoadError(e.message || "Playback failed");
+                                setPlaying(false);
+                            });
+                    }
                 }
             };
 
@@ -109,30 +121,54 @@
                         {view === 'home' ? (
                             <div className="py-20 px-6 text-center">
                                 <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tighter text-slate-900">Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-100">forgotten</span> to the forefront.</h1>
-                                <div onClick={() => setView('story')} className="max-w-md mx-auto cursor-pointer bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all">
+                                <div onClick={() => setView('story')} className="max-w-md mx-auto cursor-pointer bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="headphones" className="text-indigo-600 w-8 h-8"></i>
+                                    </div>
                                     <h3 className="font-bold text-2xl mb-2">Elias of 5th Street</h3>
                                     <p className="text-slate-400 font-serif italic text-lg">"Listen to the Narrative"</p>
                                 </div>
                             </div>
                         ) : view === 'story' ? (
                             <div className="max-w-2xl mx-auto py-12 px-6">
-                                <button onClick={() => setView('home')} className="mb-10 text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back</button>
+                                <button onClick={() => { setPlaying(false); setView('home'); }} className="mb-10 text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back</button>
                                 <h1 className="text-5xl font-extrabold mb-8 text-slate-900 leading-tight">Elias of 5th Street</h1>
                                 
-                                <div className={`border p-8 rounded-[2.5rem] mb-12 flex items-center gap-8 shadow-sm transition-colors ${loadError ? 'bg-red-50 border-red-100' : 'bg-white border-indigo-100'}`}>
-                                    <button onClick={togglePlay} className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl transition-all active:scale-95 ${loadError ? 'bg-red-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+                                <div className={`border p-8 rounded-[2.5rem] mb-12 flex items-center gap-8 shadow-sm transition-all ${loadError ? 'bg-red-50 border-red-200' : 'bg-white border-indigo-100'}`}>
+                                    <button 
+                                        onClick={togglePlay} 
+                                        className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl transition-all active:scale-95 ${loadError ? 'bg-red-500' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                                    >
                                         {playing ? <i data-lucide="pause" className="w-8 h-8"></i> : <i data-lucide="play" className="w-8 h-8 ml-1"></i>}
                                     </button>
-                                    <div>
-                                        <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${loadError ? 'text-red-500' : 'text-indigo-500'}`}>
-                                            {loadError ? "Connection Error" : "Archive Entry #001"}
+                                    <div className="flex-grow">
+                                        <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${loadError ? 'text-red-600' : 'text-indigo-500'}`}>
+                                            {loadError ? "Playback Error" : "Archive Entry #001"}
                                         </p>
                                         <h4 className="font-bold text-xl text-slate-900">
-                                            {loadError ? "Check Link Privacy" : "The Brickwork Narrative"}
+                                            {loadError ? "Audio could not load" : "The Brickwork Narrative"}
                                         </h4>
-                                        {loadError && <p className="text-xs text-red-400 mt-1">Make sure your GitHub repo is set to PUBLIC.</p>}
+                                        {loadError && (
+                                            <p className="text-xs text-red-500 mt-1 font-medium italic">
+                                                Error: {loadError}. Check if the file exists at the provided URL.
+                                            </p>
+                                        )}
+                                        <div className="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                            <div className={`h-full bg-indigo-500 transition-all duration-[300ms] ${playing ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ transitionDuration: playing ? '180s' : '0s' }}></div>
+                                        </div>
                                     </div>
-                                    <audio ref={audioRef} src={audioUrl} onEnded={() => setPlaying(false)} preload="auto" />
+                                    
+                                    <audio 
+                                        ref={audioRef} 
+                                        src={audioUrl} 
+                                        crossOrigin="anonymous"
+                                        onEnded={() => setPlaying(false)} 
+                                        onError={(e) => {
+                                            console.error("Audio Load Error");
+                                            setLoadError("The audio file failed to load. The link might be broken or private.");
+                                        }}
+                                        preload="auto" 
+                                    />
                                 </div>
 
                                 <div className="font-serif text-xl md:text-2xl text-slate-700 italic space-y-8 leading-relaxed">
