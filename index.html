@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,8 +8,8 @@
     <!-- CONFIGURATION -->
     <script>
         window.AUDIO_CONFIG = {
-            // Using jsDelivr to bypass GitHub raw content security policies
-            elias_audio: "https://cdn.jsdelivr.net/gh/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3" 
+            // Using the direct GitHub Raw link - the most reliable for public repos
+            elias_audio: "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices/main/Mar.mp3" 
         };
     </script>
 
@@ -65,7 +65,6 @@
             const [loadError, setLoadError] = useState(null);
             const audioRef = useRef(null);
 
-            // We add a timestamp to the URL to bust any aggressive caching
             const audioUrl = window.AUDIO_CONFIG.elias_audio;
 
             useEffect(() => { 
@@ -79,7 +78,6 @@
                     audioRef.current.pause();
                     setPlaying(false);
                 } else {
-                    // Reset error state before trying to play
                     setLoadError(null);
                     
                     const playPromise = audioRef.current.play();
@@ -91,7 +89,7 @@
                             })
                             .catch(e => {
                                 console.error("Playback failed:", e);
-                                setLoadError(e.message || "Playback failed");
+                                setLoadError("Browser blocked playback or file missing.");
                                 setPlaying(false);
                             });
                     }
@@ -146,12 +144,17 @@
                                             {loadError ? "Playback Error" : "Archive Entry #001"}
                                         </p>
                                         <h4 className="font-bold text-xl text-slate-900">
-                                            {loadError ? "Audio could not load" : "The Brickwork Narrative"}
+                                            {loadError ? "Audio Link Broken" : "The Brickwork Narrative"}
                                         </h4>
                                         {loadError && (
-                                            <p className="text-xs text-red-500 mt-1 font-medium italic">
-                                                Error: {loadError}. Check if the file exists at the provided URL.
-                                            </p>
+                                            <div className="mt-2">
+                                                <p className="text-xs text-red-500 font-medium italic mb-2">
+                                                    {loadError}
+                                                </p>
+                                                <a href={audioUrl} target="_blank" className="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded font-bold uppercase hover:bg-red-200 transition-colors">
+                                                    Check File Directly
+                                                </a>
+                                            </div>
                                         )}
                                         <div className="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                                             <div className={`h-full bg-indigo-500 transition-all duration-[300ms] ${playing ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ transitionDuration: playing ? '180s' : '0s' }}></div>
@@ -165,7 +168,7 @@
                                         onEnded={() => setPlaying(false)} 
                                         onError={(e) => {
                                             console.error("Audio Load Error");
-                                            setLoadError("The audio file failed to load. The link might be broken or private.");
+                                            setLoadError("The file could not be found. Check if 'Mar.mp3' is spelled exactly like this on GitHub.");
                                         }}
                                         preload="auto" 
                                     />
