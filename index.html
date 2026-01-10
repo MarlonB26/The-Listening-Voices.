@@ -65,7 +65,7 @@
             useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view]);
 
             const togglePlay = () => {
-                if (!audioUrl || audioUrl === "PASTE_LINK_HERE") {
+                if (!audioUrl || audioUrl === "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3") {
                     alert("Please paste your GitHub 'Raw' link in the AUDIO_CONFIG section at the top of the file.");
                     return;
                 }
