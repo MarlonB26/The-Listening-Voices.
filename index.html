@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Listening Voices Project</title>
+    <title>The Listening Voices Project | Sanctuary Archive</title>
     
-    <!-- CONFIGURATION -->
+    <!-- AUDIO ASSETS -->
     <script>
-        window.AUDIO_CONFIG = {
-            /**
-             * UPDATED LINK: 
-             * Noticed the period in the repository name: "The-Listening-Voices."
-             */
-            elias_audio: "https://raw.githubusercontent.com/MarlonB26/The-Listening-Voices./refs/heads/main/Mar.mp3" 
+        window.AUDIO_ASSETS = {
+            elias: "PASTE_ELIAS_DIRECT_LINK_HERE", // Example: https://files.catbox.moe/xxxxxx.mp3
+            clara: "" // Add Clara's direct link here later
         };
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:italic,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:italic,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
@@ -45,9 +42,13 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fcfcfd; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
         .font-serif { font-family: 'Lora', serif; }
-        .logo-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .story-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .story-card:hover { transform: translateY(-8px); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
     </style>
 </head>
 <body>
@@ -58,122 +59,151 @@
 
         const App = () => {
             const [view, setView] = useState('home');
+            const [activeKey, setActiveKey] = useState(null);
             const [playing, setPlaying] = useState(false);
-            const [loadError, setLoadError] = useState(null);
             const audioRef = useRef(null);
 
-            const audioUrl = window.AUDIO_CONFIG.elias_audio;
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view, activeKey]);
 
-            useEffect(() => { 
-                if (window.lucide) window.lucide.createIcons(); 
-            }, [view]);
+            const stories = {
+                elias: {
+                    name: "Elias",
+                    location: "5th Street",
+                    id: "Archive Entry #001",
+                    quote: "People walk past me like I'm part of the brickwork. But the bricks have ears, and I've been listening to the city breathe for three decades.",
+                    narrative: "Elias is a fixture of the downtown core. His story is one of quiet observation, capturing the transition of the city from industrial hub to digital ghost town.",
+                    audio: window.AUDIO_ASSETS.elias
+                },
+                clara: {
+                    name: "Clara",
+                    location: "The Bus Depot Gardens",
+                    id: "Archive Entry #002",
+                    quote: "The soil remembers what the skyscrapers forgot. Every seed is a promise that tomorrow will still happen.",
+                    narrative: "Clara tends to a hidden community garden. Her narrative explores the relationship between nature and concrete, and the legacy of growth in forgotten spaces.",
+                    audio: window.AUDIO_ASSETS.clara
+                }
+            };
 
-            const togglePlay = () => {
-                if (!audioRef.current) return;
+            const handlePlay = () => {
+                const currentAudio = stories[activeKey].audio;
+                if (!currentAudio || currentAudio.includes("PASTE_")) {
+                    alert("This audio narrative is currently being restored. Please check back shortly.");
+                    return;
+                }
+
                 if (playing) {
                     audioRef.current.pause();
                     setPlaying(false);
                 } else {
-                    setLoadError(null);
-                    audioRef.current.play().then(() => setPlaying(true)).catch(e => {
-                        setLoadError("Playback failed. Verify the file link is accessible.");
-                        setPlaying(false);
-                    });
+                    audioRef.current.play()
+                        .then(() => setPlaying(true))
+                        .catch(e => alert("Connection Error: The audio file could not be reached. Verify the direct link."));
                 }
             };
 
-            const handleForm = async (e, type) => {
+            const handleForm = async (e) => {
                 e.preventDefault();
+                const btn = e.target.querySelector('button');
+                btn.disabled = true;
+                btn.innerText = "Processing...";
+                
                 const data = Object.fromEntries(new FormData(e.target).entries());
-                const success = await window.saveToSanctuary(type, data);
-                if (success) { alert("Stored in Sanctuary."); e.target.reset(); }
+                const success = await window.saveToSanctuary('suggestions', data);
+                
+                if (success) {
+                    alert("Your suggestion has been added to the Sanctuary Archive queue.");
+                    e.target.reset();
+                    setView('home');
+                }
+                btn.disabled = false;
+                btn.innerText = "Submit Suggestion";
             };
 
             return (
                 <div className="min-h-screen flex flex-col">
-                    <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 py-4 px-6">
+                    <nav className="fixed top-0 w-full z-50 glass-nav py-4 px-8">
                         <div className="max-w-6xl mx-auto flex justify-between items-center">
-                            <div onClick={() => setView('home')} className="flex items-center gap-3 cursor-pointer">
-                                <div className="w-10 h-10 logo-gradient rounded-xl flex items-center justify-center shadow-lg"><i data-lucide="mic" className="text-white w-5 h-5"></i></div>
-                                <span className="font-bold text-xl tracking-tight text-slate-900">The Listening Voices</span>
+                            <div onClick={() => {setView('home'); setPlaying(false);}} className="flex items-center gap-3 cursor-pointer group">
+                                <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center group-hover:bg-indigo-600 transition-colors shadow-lg">
+                                    <i data-lucide="mic-2" className="text-white w-5 h-5"></i>
+                                </div>
+                                <span className="font-bold text-xl tracking-tighter uppercase">The Listening Voices</span>
                             </div>
-                            <button onClick={() => setView('submit')} className="bg-slate-900 text-white px-6 py-2 rounded-full text-sm font-bold">Suggest</button>
+                            <button onClick={() => setView('submit')} className="bg-black text-white px-8 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-md active:scale-95">Suggest Voice</button>
                         </div>
                     </nav>
 
-                    <main className="flex-grow pt-24">
+                    <main className="flex-grow pt-32 pb-20 px-6">
                         {view === 'home' ? (
-                            <div className="py-20 px-6 text-center">
-                                <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tighter text-slate-900">Bringing the <span className="italic font-serif text-indigo-600 underline decoration-indigo-100">forgotten</span> to the forefront.</h1>
-                                <div onClick={() => setView('story')} className="max-w-md mx-auto cursor-pointer bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
-                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                                        <i data-lucide="headphones" className="text-indigo-600 w-8 h-8"></i>
-                                    </div>
-                                    <h3 className="font-bold text-2xl mb-2">Elias of 5th Street</h3>
-                                    <p className="text-slate-400 font-serif italic text-lg">"Listen to the Narrative"</p>
+                            <div className="max-w-5xl mx-auto animate-fade">
+                                <header className="text-center mb-20">
+                                    <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter mb-6">THE SANCTUARY.</h1>
+                                    <p className="font-serif italic text-xl text-slate-500 italic max-w-xl mx-auto">"Bringing the voices hidden in the shadow of progress back to the light."</p>
+                                </header>
+                                
+                                <div className="grid md:grid-cols-2 gap-10">
+                                    {Object.entries(stories).map(([key, story]) => (
+                                        <div key={key} onClick={() => {setActiveKey(key); setView('story');}} className="story-card group cursor-pointer bg-white border border-slate-100 p-10 rounded-[3rem] shadow-sm hover:shadow-2xl">
+                                            <p className="text-[10px] font-bold tracking-[0.2em] text-indigo-600 uppercase mb-4">{story.id}</p>
+                                            <h2 className="text-4xl font-bold mb-4 group-hover:text-indigo-600 transition-colors leading-tight">{story.name} <span className="block text-lg font-normal text-slate-400">of {story.location}</span></h2>
+                                            <p className="font-serif italic text-slate-500 text-lg border-l-2 border-indigo-50 pl-6 py-2">"{story.quote.substring(0, 60)}..."</p>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         ) : view === 'story' ? (
-                            <div className="max-w-2xl mx-auto py-12 px-6">
-                                <button onClick={() => { setPlaying(false); setView('home'); }} className="mb-10 text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back</button>
-                                <h1 className="text-5xl font-extrabold mb-8 text-slate-900 leading-tight">Elias of 5th Street</h1>
+                            <div className="max-w-2xl mx-auto animate-fade">
+                                <button onClick={() => {setView('home'); setPlaying(false);}} className="mb-12 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-indigo-600 transition-colors">
+                                    <i data-lucide="chevron-left" className="w-4 h-4"></i> Back to Archive
+                                </button>
                                 
-                                <div className={`border p-8 rounded-[2.5rem] mb-12 flex items-center gap-8 shadow-sm transition-all ${loadError ? 'bg-red-50 border-red-200' : 'bg-white border-indigo-100'}`}>
-                                    <button 
-                                        onClick={togglePlay} 
-                                        className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl transition-all active:scale-95 ${loadError ? 'bg-red-500' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-                                    >
-                                        {playing ? <i data-lucide="pause" className="w-8 h-8"></i> : <i data-lucide="play" className="w-8 h-8 ml-1"></i>}
-                                    </button>
-                                    <div className="flex-grow">
-                                        <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${loadError ? 'text-red-600' : 'text-indigo-500'}`}>
-                                            {loadError ? "Connection Error" : "Archive Entry #001"}
-                                        </p>
-                                        <h4 className="font-bold text-xl text-slate-900">
-                                            {loadError ? "Audio Link Needs Verification" : "The Brickwork Narrative"}
-                                        </h4>
-                                        {loadError && (
-                                            <div className="mt-2 flex flex-col gap-2">
-                                                <p className="text-xs text-red-500 font-medium italic">
-                                                    Check the console for errors or click the link below to verify access.
-                                                </p>
-                                                <a href={audioUrl} target="_blank" className="text-[10px] bg-red-600 text-white w-fit px-3 py-1 rounded font-bold uppercase hover:bg-red-700">
-                                                    Verify Link Access
-                                                </a>
-                                            </div>
-                                        )}
-                                        <div className="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                            <div className={`h-full bg-indigo-500 transition-all duration-[300ms] ${playing ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ transitionDuration: playing ? '180s' : '0s' }}></div>
-                                        </div>
+                                <h1 className="text-5xl font-extrabold mb-2 tracking-tighter">{stories[activeKey].name}</h1>
+                                <p className="text-indigo-600 font-bold tracking-widest text-xs uppercase mb-10">of {stories[activeKey].location}</p>
+                                
+                                <div className="bg-black rounded-[3rem] p-10 mb-12 flex items-center gap-8 shadow-2xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                                        <i data-lucide="volume-2" className="w-32 h-32 text-white"></i>
                                     </div>
-                                    
-                                    <audio 
-                                        ref={audioRef} 
-                                        src={audioUrl} 
-                                        crossOrigin="anonymous"
-                                        onEnded={() => setPlaying(false)} 
-                                        onError={() => setLoadError("Link Error. Check repo name period.")}
-                                        preload="auto" 
-                                    />
+                                    <button onClick={handlePlay} className="relative z-10 w-24 h-24 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform shadow-xl">
+                                        {playing ? <i data-lucide="pause" className="w-10 h-10"></i> : <i data-lucide="play" className="w-10 h-10 ml-1"></i>}
+                                    </button>
+                                    <div className="relative z-10 text-white">
+                                        <p className="text-[10px] font-bold tracking-[0.3em] uppercase opacity-50 mb-1">{stories[activeKey].id}</p>
+                                        <h4 className="text-xl font-bold tracking-tight">Listen to Narrative</h4>
+                                    </div>
+                                    <audio ref={audioRef} src={stories[activeKey].audio} onEnded={() => setPlaying(false)} />
                                 </div>
 
-                                <div className="font-serif text-xl md:text-2xl text-slate-700 italic space-y-8 leading-relaxed">
-                                    <p>"People walk past me like I'm part of the brickwork. But the bricks have ears, and I've been listening to the city breathe for three decades."</p>
+                                <div className="font-serif text-2xl text-slate-800 italic space-y-8 leading-[1.6]">
+                                    <p className="text-3xl text-indigo-600 leading-tight">"{stories[activeKey].quote}"</p>
+                                    <div className="h-px w-20 bg-slate-200"></div>
+                                    <p className="text-xl font-sans not-italic text-slate-500 leading-relaxed">{stories[activeKey].narrative}</p>
                                 </div>
                             </div>
                         ) : (
-                            <div className="max-w-xl mx-auto py-12 px-6">
-                                <h2 className="text-4xl font-extrabold mb-8 text-slate-900">Suggest a Voice</h2>
-                                <form onSubmit={(e) => handleForm(e, 'suggestions')} className="space-y-4">
-                                    <input required name="name" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200" placeholder="Name" />
-                                    <textarea required name="story" rows="4" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200" placeholder="Story..."></textarea>
-                                    <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold">Submit to Sanctuary</button>
+                            <div className="max-w-xl mx-auto animate-fade">
+                                <h2 className="text-5xl font-extrabold mb-4 tracking-tighter leading-tight">Add to the Sanctuary.</h2>
+                                <p className="text-slate-500 mb-10 font-serif italic text-lg">Whose voice has the city forgotten? Tell us where to listen.</p>
+                                <form onSubmit={handleForm} className="space-y-4">
+                                    <div className="group border-2 border-slate-100 bg-white rounded-2xl p-4 focus-within:border-indigo-600 transition-colors">
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Full Name</label>
+                                        <input required name="name" className="w-full bg-transparent outline-none text-lg" placeholder="e.g. Samuel of the Wharf" />
+                                    </div>
+                                    <div className="group border-2 border-slate-100 bg-white rounded-2xl p-4 focus-within:border-indigo-600 transition-colors">
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">The Story Sketch</label>
+                                        <textarea required name="story" rows="5" className="w-full bg-transparent outline-none text-lg resize-none" placeholder="What secrets does this person hold?"></textarea>
+                                    </div>
+                                    <button className="w-full py-6 bg-indigo-600 text-white rounded-2xl font-bold text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all active:scale-[0.98]">Submit Suggestion</button>
                                 </form>
                             </div>
                         )}
                     </main>
-                    <footer className="py-20 bg-slate-950 text-white text-center rounded-t-[4rem] mt-20">
-                        <p className="font-serif italic text-slate-500">"To listen is to love."</p>
+
+                    <footer className="py-20 border-t border-slate-100 text-center">
+                        <div className="max-w-xs mx-auto opacity-30 hover:opacity-100 transition-opacity">
+                            <p className="font-serif italic text-sm mb-2 text-slate-900">"To listen is to love."</p>
+                            <div className="h-px w-full bg-slate-900 mx-auto"></div>
+                        </div>
                     </footer>
                 </div>
             );
