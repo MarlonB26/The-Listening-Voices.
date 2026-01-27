@@ -3,247 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanctuary of Voices | The Listening Voices Project</title>
-    
+    <title>The Voice Sanctuary | No Voice Is Lost</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Lora:italic,wght@0,400;1,400;1,500;1,600&display=swap" rel="stylesheet">
-    
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAxYXQFTFKrcSSLI1hELd86tmrmb6ndRjQ",
-            authDomain: "the-listening-voices-project.firebaseapp.com",
-            projectId: "the-listening-voices-project",
-            storageBucket: "the-listening-voices-project.firebasestorage.app",
-            messagingSenderId: "23814688068",
-            appId: "1:23814688068:web:bfa44db13579a08a0fdb11"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        window.saveData = async (col, data) => {
-            try { 
-                await addDoc(collection(db, col), { ...data, timestamp: serverTimestamp() }); 
-                return true; 
-            } catch (e) { return false; }
-        };
-    </script>
-
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f8f6; color: #1a1a1a; scroll-behavior: smooth; }
-        .font-serif { font-family: 'Lora', serif; }
-        .nav-blur { background: rgba(248, 248, 246, 0.9); backdrop-filter: blur(10px); }
-        .card-shadow { box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05); transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1); }
-        .card-shadow:hover { box-shadow: 0 30px 60px -12px rgba(0,0,0,0.08); transform: translateY(-8px); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 1s cubic-bezier(0.2, 1, 0.2, 1) forwards; }
-        .logo-spin:hover { transform: rotate(180deg); transition: transform 0.8s ease; }
-        .first-letter-cap::first-letter {
-            font-size: 6rem;
-            font-weight: 900;
-            float: left;
-            margin-right: 1.5rem;
-            line-height: 0.8;
-            color: #000;
-            font-family: 'Inter', sans-serif;
+        body { font-family: 'Inter', sans-serif; background-color: #fcfaf7; color: #2d2a26; }
+        h1, h2, h3, .serif { font-family: 'Crimson Pro', serif; }
+        .hero-gradient {
+            background: linear-gradient(rgba(45, 42, 38, 0.7), rgba(45, 42, 38, 0.7)),
+                        url('https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
         }
+        .fade-in { animation: fadeIn 2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="selection:bg-black selection:text-white">
-    <div id="root"></div>
+<body>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <!-- Navigation -->
+    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto">
+        <div class="text-2xl font-semibold tracking-tighter serif">The Voice Sanctuary</div>
+        <div class="space-x-8 text-sm uppercase tracking-widest font-medium text-stone-500">
+            <a href="#story" class="hover:text-stone-800 transition">The Why</a>
+            <a href="#voices" class="hover:text-stone-800 transition">Voices</a>
+            <a href="#share" class="px-4 py-2 bg-stone-800 text-white rounded-full hover:bg-stone-700 transition">Share a Voice</a>
+        </div>
+    </nav>
 
-        const App = () => {
-            const [view, setView] = useState('home');
-            const [activeKey, setActiveKey] = useState(null);
+    <!-- Hero Section -->
+    <header class="hero-gradient h-[80vh] flex items-center justify-center text-center text-white px-4">
+        <div class="max-w-3xl fade-in">
+            <h1 class="text-5xl md:text-7xl mb-6">No Voice Is Lost.</h1>
+            <p class="text-xl md:text-2xl font-light italic opacity-90">A sacred space for the stories that time almost forgot.</p>
+        </div>
+    </header>
 
-            useEffect(() => { 
-                if (window.lucide) window.lucide.createIcons(); 
-                window.scrollTo(0,0); 
-            }, [view]);
+    <!-- The Founding Story -->
+    <section id="story" class="py-24 px-6 bg-white">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl mb-12 text-center serif">The Encounter That Changed Everything</h2>
+            <div class="prose prose-stone mx-auto text-lg leading-relaxed text-stone-700 italic">
+                <p class="mb-6">
+                    "In the heart of winter on a snowy and freezing day, I drove past a homeless man totally covered sitting outside. Though he was trembling, his eyes flickered with a warmth that touched me. I had to pull over."
+                </p>
+                <p class="mb-6">
+                    "I took a blanket from my car and wrapped him in it, and the toothless smile he gave me filled my eyes with tears. I went back to my car, however, I could not shake his face or his gratitude in telling me I was the first person he had interacted with in six months."
+                </p>
+                <p class="mb-12">
+                    "Driving home felt so empty thinking of how many stories and life experiences he might have that no one will ever get to hear or read or even know about. That incident was three years ago, but it’s not left my mind since."
+                </p>
+            </div>
+            <div class="text-center">
+                <p class="text-xl font-medium serif border-t border-stone-100 pt-8">
+                    That’s why I created this platform: to give a voice to those whose voices have been silenced by age or circumstance. 
+                </p>
+            </div>
+        </div>
+    </section>
 
-            const stories = {
-                architect: {
-                    name: "The Vision",
-                    location: "Global Archive",
-                    entry: "Record 001",
-                    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200",
-                    quote: "We are not the chaos that surrounds us; we are the narratives we choose to preserve.",
-                    content: [
-                        "The Sanctuary of Voices was born from a singular realization: the world is designed to forget. We build over graveyards, we pave over history, and we ignore the silent resilience of those who have survived the impossible. This archive is the defiance of that silence.",
-                        "As the Architect of this project, my mission is to provide a permanent home for stories that have fallen through the cracks. Whether it is the rhythmic memory of an industrial shipyard or a garden blooming in the shadow of tragedy, these records serve as a testament to the strength of the human spirit.",
-                        "We do not merely collect stories; we protect them. We believe that when a voice is documented, it becomes a pillar of truth that cannot be torn down. This is a sanctuary for the voiceless, a place where survival is celebrated and the human narrative is reclaimed from the whispers of chaos.",
-                        "This is only the beginning. Behind every record is a living history, and behind this project is a dedication to ensuring that no journey, no matter how difficult, is ever truly lost. Welcome to the Sanctuary. Your story has a home here."
-                    ]
-                },
-                elias: {
-                    name: "Elias",
-                    location: "5th Street Shipyards",
-                    entry: "Record 002",
-                    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1200",
-                    quote: "The bricks have ears, and I've been listening to the city breathe for three decades.",
-                    content: [
-                        "Elias doesn't just watch the city; he stands guard over the silence he earned. He remembers when 5th Street wasn't steel and glass, but a rhythmic chaos of ironworks and dockhands. He spent thirty years in the roar of the shipyards, a man whose life was measured in the deafening strike of metal on metal.",
-                        "He survived the Great Industrial Collapse of the 80s—not just the loss of his livelihood, but the literal loss of his hearing in one ear during a structural failure that took the lives of those standing beside him. When the world finally stopped screaming, Elias chose the quiet.",
-                        "He realized that when you stop talking, you begin to hear the things others miss: the way the wind hums through the power lines like a cello, or the specific, heavy footfalls of someone carrying a burden they haven't shared. People think he is lonely, but Elias says he is finally in good company.",
-                        "He has survived the noise of a century, and in the stillness of 5th Street, he has found a peace that the skyscrapers will never understand. To him, the city isn't a place of glass; it's a living, breathing history that only speaks when you're quiet enough to listen."
-                    ]
-                },
-                clara: {
-                    name: "Clara",
-                    location: "East 85th St, Brooklyn",
-                    entry: "Record 003",
-                    image: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200",
-                    quote: "The soil remembers what the skyscrapers forgot.",
-                    content: [
-                        "Clara’s garden is a defiance of concrete. She grows tomatoes in salted earth and lilies in the shadow of the terminal. For almost 60 years, East 85th Street has been her sanctuary. Then came September 11, 2001. Clara was working in one of the towers when the world shifted in an instant.",
-                        "Dust, smoke, and dirt engulfed her as she fled, a surreal contrast to the life she had known. Emerging from the chaos, she looked like a ghost, her clothes tattered and her spirit tested. But like the seeds in her garden, buried beneath the soil, she refused to remain hidden.",
-                        "The experience left scars, but it also illuminated a deeper resolve. Clara rose from that day, determined to nurture hope amidst despair. Every sprouting seed is a tribute to her resilience. She meticulously tends to each plant, whispering words of encouragement.",
-                        "She nurtures their growth as if they can absorb her hopes and fears, proving that life can persist even in the harshest environments. To Clara, the garden isn't just a hobby; it is her testimony that beauty can grow from the ashes of devastation."
-                    ]
-                }
-            };
-
-            return (
-                <div className="min-h-screen flex flex-col font-sans">
-                    <nav className="fixed top-0 w-full z-50 nav-blur border-b border-black/5 py-6 px-6 md:px-12">
-                        <div className="max-w-7xl mx-auto flex justify-between items-center">
-                            <div onClick={() => setView('home')} className="flex items-center gap-3 cursor-pointer group">
-                                <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center logo-spin">
-                                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                                </div>
-                                <span className="font-bold text-sm tracking-[0.25em] uppercase">Sanctuary of Voices</span>
-                            </div>
-                            <button onClick={() => setView('submit')} className="text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-2 bg-black text-white rounded-full hover:bg-indigo-600 transition-all">Suggest Record</button>
-                        </div>
-                    </nav>
-
-                    <main className="flex-grow pt-40 px-6 md:px-12">
-                        {view === 'home' ? (
-                            <div className="max-w-6xl mx-auto animate-fade">
-                                <section className="mb-24 md:mb-36 text-center md:text-left">
-                                    <h1 className="text-[14vw] md:text-[8rem] font-black tracking-tighter leading-[0.85] mb-12 text-black uppercase">NO VOICE IS LOST.</h1>
-                                    <p className="font-serif italic text-2xl md:text-4xl text-slate-400 max-w-4xl leading-tight">
-                                        Welcome to the Sanctuary. An archive dedicated to preserving the narratives of survival hidden in the city's architecture and the souls of its people.
-                                    </p>
-                                </section>
-                                
-                                <div className="grid md:grid-cols-3 gap-8 md:gap-12 mb-32">
-                                    {Object.entries(stories).map(([key, story]) => (
-                                        <div key={key} onClick={() => {setActiveKey(key); setView('story');}} className="bg-white rounded-[2rem] card-shadow cursor-pointer flex flex-col overflow-hidden group">
-                                            <div className="h-80 overflow-hidden bg-slate-200">
-                                                <img src={story.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={story.name} />
-                                            </div>
-                                            <div className="p-8 flex flex-col justify-between flex-grow min-h-[400px]">
-                                                <div>
-                                                    <p className="text-[9px] font-bold tracking-[0.5em] text-indigo-500 uppercase mb-4">{story.entry}</p>
-                                                    <h3 className="text-5xl font-black tracking-tighter mb-2 uppercase leading-none">{story.name}</h3>
-                                                    <p className="text-[9px] uppercase tracking-[0.3em] text-slate-400 font-bold mb-8">{story.location}</p>
-                                                </div>
-                                                <p className="font-serif italic text-2xl text-slate-800 leading-snug">"{story.quote}"</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : view === 'story' ? (
-                            <div className="max-w-4xl mx-auto pb-48 animate-fade">
-                                <button onClick={() => setView('home')} className="mb-16 flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-slate-300 hover:text-black transition-colors">
-                                    <i data-lucide="arrow-left" className="w-4 h-4"></i> Back to Archive
-                                </button>
-                                
-                                <div className="mb-24">
-                                    <div className="w-full h-[65vh] overflow-hidden rounded-[4rem] mb-16 shadow-2xl bg-slate-100">
-                                        <img src={stories[activeKey].image} className="w-full h-full object-cover" />
-                                    </div>
-                                    <p className="text-[11px] font-bold tracking-[0.6em] text-indigo-500 uppercase mb-6">{stories[activeKey].entry}</p>
-                                    <h2 className="text-8xl md:text-[10rem] font-black mb-8 tracking-tighter leading-[0.8] uppercase">{stories[activeKey].name}</h2>
-                                    <p className="text-[11px] font-bold tracking-[0.5em] uppercase text-slate-400">{stories[activeKey].location}</p>
-                                </div>
-
-                                <div className="max-w-3xl">
-                                    <p className="font-serif italic text-4xl md:text-6xl text-black leading-tight mb-32 border-l-[20px] border-black pl-12 py-6">
-                                        "{stories[activeKey].quote}"
-                                    </p>
-                                    
-                                    <div className="space-y-16">
-                                        {stories[activeKey].content.map((para, i) => (
-                                            <p key={i} className={`text-2xl md:text-4xl font-light text-slate-600 leading-relaxed ${i === 0 ? 'first-letter-cap' : ''}`}>
-                                                {para}
-                                            </p>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="max-w-2xl mx-auto py-12 animate-fade">
-                                <h2 className="text-7xl font-black mb-8 tracking-tighter uppercase leading-none">Contribute.</h2>
-                                <p className="text-slate-500 font-serif italic text-2xl mb-16 leading-relaxed">
-                                    Share a fragment of a story that deserves preservation.
-                                </p>
-                                <form onSubmit={async (e) => {
-                                    e.preventDefault();
-                                    const btn = e.target.querySelector('button');
-                                    btn.disabled = true;
-                                    const data = Object.fromEntries(new FormData(e.target).entries());
-                                    const success = await window.saveData('suggestions', data);
-                                    if (success) { alert("Stored in the Sanctuary."); setView('home'); }
-                                    else { btn.disabled = false; }
-                                }} className="space-y-16">
-                                    <div className="border-b-2 border-black/5 focus-within:border-black transition-colors pb-6">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400 mb-4 block">Identifier</label>
-                                        <input required name="name" className="w-full bg-transparent outline-none text-3xl font-bold" />
-                                    </div>
-                                    <div className="border-b-2 border-black/5 focus-within:border-black transition-colors pb-6">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400 mb-4 block">Narrative</label>
-                                        <textarea required name="story" rows="4" className="w-full bg-transparent outline-none text-2xl font-light leading-relaxed resize-none"></textarea>
-                                    </div>
-                                    <button className="w-full py-10 bg-black text-white rounded-3xl font-extrabold uppercase tracking-[0.5em] text-[10px] shadow-2xl hover:bg-indigo-700 transition-all">Submit to Archive</button>
-                                </form>
-                            </div>
-                        )}
-                    </main>
-
-                    <footer className="py-40 text-center border-t border-black/5 mx-12 mt-48">
-                        <div className="max-w-5xl mx-auto">
-                            <p className="font-serif italic text-3xl text-slate-400 mb-16 tracking-tight">"To listen is to love."</p>
-                            
-                            <div className="space-y-3 mb-20">
-                                <p className="text-[12px] font-extrabold uppercase tracking-[0.6em] text-black">The Sanctuary of Voices</p>
-                                <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-slate-400">
-                                    A primary initiative of <span className="text-slate-600">The Listening Voices Project</span>
-                                </p>
-                            </div>
-
-                            <div className="flex flex-col md:flex-row justify-center items-center gap-20 text-[10px] font-bold uppercase tracking-widest">
-                                <div className="text-center group">
-                                    <p className="text-indigo-500 mb-3 transition-colors group-hover:text-black">Executive Director & Lead Archivist</p>
-                                    <p className="text-black text-2xl font-black tracking-normal">Mar B.</p>
-                                </div>
-                                <div className="hidden md:block w-px h-16 bg-black/10"></div>
-                                <div className="text-center group">
-                                    <p className="text-slate-400 mb-3 transition-colors group-hover:text-black">Systems Architect & Digital Steward</p>
-                                    <p className="text-black text-2xl font-black tracking-normal">Samaritan</p>
-                                </div>
-                            </div>
-                            
-                            <p className="mt-32 text-[8px] font-bold uppercase tracking-[1.2em] opacity-20 italic">thevoicesanctuary.org © 2026 | All Records Preserved</p>
-                        </div>
-                    </footer>
+    <!-- Submission Section -->
+    <section id="share" class="py-24 px-6 bg-stone-100">
+        <div class="max-w-2xl mx-auto bg-white p-8 md:p-12 shadow-sm rounded-lg">
+            <h2 class="text-3xl mb-4 serif text-center">Do you know a voice that needs a home?</h2>
+            <p class="text-center text-stone-600 mb-10 text-sm">Whether it is your own story or the story of an elder in your community, we are here to listen.</p>
+            
+            <form action="#" method="POST" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">Your Name</label>
+                    <input type="text" class="w-full border-b border-stone-300 py-2 focus:border-stone-800 outline-none transition bg-transparent" placeholder="Full Name">
                 </div>
-            );
-        };
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">Email Address</label>
+                    <input type="email" class="w-full border-b border-stone-300 py-2 focus:border-stone-800 outline-none transition bg-transparent" placeholder="email@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">The Story / The Voice</label>
+                    <textarea rows="5" class="w-full border border-stone-200 p-4 focus:border-stone-800 outline-none transition bg-stone-50 rounded" placeholder="Tell us about the voice you wish to preserve..."></textarea>
+                </div>
+                <button type="submit" class="w-full bg-stone-800 text-white py-4 rounded hover:bg-stone-700 transition uppercase tracking-widest text-sm font-bold">Submit to the Sanctuary</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 text-center text-stone-400 text-xs uppercase tracking-[0.2em]">
+        <p>&copy; 2024 The Voice Sanctuary. Kingston. No Voice Is Lost.</p>
+    </footer>
+
 </body>
 </html>
