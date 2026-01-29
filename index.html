@@ -7,14 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fcfaf7; color: #2d2a26; }
+        body { font-family: 'Inter', sans-serif; background-color: #fcfaf7; color: #2d2a26; scroll-behavior: smooth; }
         h1, h2, h3, .serif { font-family: 'Crimson Pro', serif; }
         .hero-gradient {
-            background: linear-gradient(rgba(45, 42, 38, 0.7), rgba(45, 42, 38, 0.7)),
-                        url('https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background: linear-gradient(rgba(45, 42, 38, 0.75), rgba(45, 42, 38, 0.75)),
+                        url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80');
             background-size: cover;
             background-position: center;
         }
+        .voice-card { transition: all 0.3s ease; border-top: 4px solid #2d2a26; }
+        .voice-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); }
         .fade-in { animation: fadeIn 2s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -22,73 +24,101 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto">
-        <div class="text-2xl font-semibold tracking-tighter serif">The Voice Sanctuary</div>
-        <div class="space-x-8 text-sm uppercase tracking-widest font-medium text-stone-500">
-            <a href="#story" class="hover:text-stone-800 transition">The Why</a>
-            <a href="#voices" class="hover:text-stone-800 transition">Voices</a>
-            <a href="#share" class="px-4 py-2 bg-stone-800 text-white rounded-full hover:bg-stone-700 transition">Share a Voice</a>
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-stone-100 p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="text-xl md:text-2xl font-semibold tracking-tighter serif uppercase">The Voice Sanctuary</div>
+            <div class="hidden md:flex space-x-8 text-xs uppercase tracking-widest font-bold text-stone-500">
+                <a href="#story" class="hover:text-stone-800 transition">The Why</a>
+                <a href="#voices" class="hover:text-stone-800 transition">Voices</a>
+                <a href="#share" class="px-5 py-2.5 bg-stone-800 text-white rounded-full hover:bg-stone-700 transition">Share a Voice</a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero-gradient h-[80vh] flex items-center justify-center text-center text-white px-4">
+    <header class="hero-gradient h-[90vh] flex items-center justify-center text-center text-white px-4">
         <div class="max-w-3xl fade-in">
-            <h1 class="text-5xl md:text-7xl mb-6">No Voice Is Lost.</h1>
-            <p class="text-xl md:text-2xl font-light italic opacity-90">A sacred space for the stories that time almost forgot.</p>
+            <h1 class="text-5xl md:text-8xl mb-6 leading-tight serif">No Voice Is Lost.</h1>
+            <p class="text-xl md:text-2xl font-light italic opacity-90 text-stone-200">A digital archive for the wisdom and stories of our elders.</p>
         </div>
     </header>
 
     <!-- The Founding Story -->
     <section id="story" class="py-24 px-6 bg-white">
         <div class="max-w-3xl mx-auto">
-            <h2 class="text-3xl md:text-4xl mb-12 text-center serif">The Encounter That Changed Everything</h2>
-            <div class="prose prose-stone mx-auto text-lg leading-relaxed text-stone-700 italic">
-                <p class="mb-6">
-                    "In the heart of winter on a snowy and freezing day, I drove past a homeless man totally covered sitting outside. Though he was trembling, his eyes flickered with a warmth that touched me. I had to pull over."
+            <h2 class="text-sm uppercase tracking-[0.3em] text-stone-400 font-bold mb-12 text-center">The Founding Vision</h2>
+            <div class="prose prose-stone mx-auto text-xl leading-relaxed text-stone-800 italic border-l-4 border-stone-900 pl-10 mb-12">
+                <p class="mb-8">
+                    "I took a blanket from my car and wrapped him in it, and the toothless smile he gave me filled my eyes with tears. I had to pull over... he told me I was the first person he had interacted with in six months."
                 </p>
-                <p class="mb-6">
-                    "I took a blanket from my car and wrapped him in it, and the toothless smile he gave me filled my eyes with tears. I went back to my car, however, I could not shake his face or his gratitude in telling me I was the first person he had interacted with in six months."
-                </p>
-                <p class="mb-12">
-                    "Driving home felt so empty thinking of how many stories and life experiences he might have that no one will ever get to hear or read or even know about. That incident was three years ago, but it’s not left my mind since."
+                <p>
+                    "Driving home felt so empty thinking of how many stories and life experiences he might have that no one will ever get to hear or read or even know about."
                 </p>
             </div>
-            <div class="text-center">
-                <p class="text-xl font-medium serif border-t border-stone-100 pt-8">
+            <div class="text-center max-w-2xl mx-auto mt-16">
+                <p class="text-2xl serif text-stone-900 leading-snug">
                     That’s why I created this platform: to give a voice to those whose voices have been silenced by age or circumstance. 
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- Submission Section -->
-    <section id="share" class="py-24 px-6 bg-stone-100">
-        <div class="max-w-2xl mx-auto bg-white p-8 md:p-12 shadow-sm rounded-lg">
-            <h2 class="text-3xl mb-4 serif text-center">Do you know a voice that needs a home?</h2>
-            <p class="text-center text-stone-600 mb-10 text-sm">Whether it is your own story or the story of an elder in your community, we are here to listen.</p>
-            
-            <form action="#" method="POST" class="space-y-6">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">Your Name</label>
-                    <input type="text" class="w-full border-b border-stone-300 py-2 focus:border-stone-800 outline-none transition bg-transparent" placeholder="Full Name">
+    <!-- Voices Gallery -->
+    <section id="voices" class="py-24 px-6 bg-stone-50 border-y border-stone-200">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl serif mb-4">The Voices of Kingston</h2>
+                <div class="w-24 h-1 bg-stone-900 mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Example Voice 1 -->
+                <div class="voice-card bg-white p-10 shadow-sm">
+                    <p class="italic text-stone-700 mb-10 font-light leading-relaxed text-lg">"The secret to a long life isn't just breathing; it's remembering to look up at the sky once in a while. We forget we're part of the stars."</p>
+                    <div class="serif text-xl font-bold">— Arthur, 84</div>
+                    <div class="text-[10px] text-stone-400 uppercase tracking-widest mt-2 font-bold">Portsmouth Village</div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">Email Address</label>
-                    <input type="email" class="w-full border-b border-stone-300 py-2 focus:border-stone-800 outline-none transition bg-transparent" placeholder="email@example.com">
+
+                <!-- Example Voice 2 -->
+                <div class="voice-card bg-white p-10 shadow-sm">
+                    <p class="italic text-stone-700 mb-10 font-light leading-relaxed text-lg">"I've seen the beginning and the end. The only thing people talk about when it's over is who they loved. Not what they owned."</p>
+                    <div class="serif text-xl font-bold">— Margaret, 91</div>
+                    <div class="text-[10px] text-stone-400 uppercase tracking-widest mt-2 font-bold">Williamsville</div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">The Story / The Voice</label>
-                    <textarea rows="5" class="w-full border border-stone-200 p-4 focus:border-stone-800 outline-none transition bg-stone-50 rounded" placeholder="Tell us about the voice you wish to preserve..."></textarea>
+
+                <!-- Example Voice 3 -->
+                <div class="voice-card bg-white p-10 shadow-sm">
+                    <p class="italic text-stone-700 mb-10 font-light leading-relaxed text-lg">"Sometimes the coldest person has the warmest heart, they've just been outside too long."</p>
+                    <div class="serif text-xl font-bold">— The Man in the Snow</div>
+                    <div class="text-[10px] text-stone-400 uppercase tracking-widest mt-2 font-bold">Founder's Inspiration</div>
                 </div>
-                <button type="submit" class="w-full bg-stone-800 text-white py-4 rounded hover:bg-stone-700 transition uppercase tracking-widest text-sm font-bold">Submit to the Sanctuary</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submission Form -->
+    <section id="share" class="py-32 px-6 bg-white">
+        <div class="max-w-xl mx-auto text-center mb-12">
+            <h2 class="text-4xl serif mb-4">Preserve a Legacy</h2>
+            <p class="text-stone-500">Submit a story, a piece of wisdom, or a name that deserves to be remembered.</p>
+        </div>
+        <div class="max-w-xl mx-auto bg-stone-50 p-10 border border-stone-200 shadow-xl">
+            <form action="#" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="text" placeholder="Your Name" class="w-full bg-transparent border-b border-stone-300 py-3 outline-none focus:border-stone-900 transition">
+                    <input type="email" placeholder="Email Address" class="w-full bg-transparent border-b border-stone-300 py-3 outline-none focus:border-stone-900 transition">
+                </div>
+                <textarea rows="4" placeholder="Share the wisdom or the story here..." class="w-full bg-white border border-stone-200 p-4 outline-none focus:border-stone-900 transition"></textarea>
+                <button type="submit" class="w-full bg-stone-900 text-white py-5 uppercase tracking-[0.2em] font-bold text-xs hover:bg-stone-800 transition shadow-lg">Submit to the Sanctuary</button>
             </form>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 text-center text-stone-400 text-xs uppercase tracking-[0.2em]">
-        <p>&copy; 2024 The Voice Sanctuary. Kingston. No Voice Is Lost.</p>
+    <footer class="py-20 px-6 bg-stone-900 text-stone-500 text-center">
+        <div class="text-2xl serif text-white mb-6 uppercase tracking-widest">The Voice Sanctuary</div>
+        <p class="text-[10px] uppercase tracking-[0.4em] mb-12">Kingston, Ontario • No Voice Is Lost</p>
+        <p class="text-[9px] opacity-40 uppercase tracking-widest">&copy; 2024. All Rights Reserved.</p>
     </footer>
 
 </body>
